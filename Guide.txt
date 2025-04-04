@@ -1,0 +1,240 @@
+1. backend : npm init -y // create package.json
+2. In package.json add "type": "module" // to use ES6 import/export.
+3. backend : npm install express nodemon // install express, nodemon.
+4. nodemon helps to restart server automatically when changes are made.
+5. In package.json under scripts remove test and add "start": "node index.js" and "dev": "nodemon index.js"
+6. create index.js and write following 
+{
+    import express from "express"; 
+    const app =  express();
+    }
+7. create config.js and write {export const PORT = 5555} //a better way to do this is dotenv
+8. Import PORT with {} as it is a named export and add .js from file. and add a listener like below
+{
+app.listen(PORT, () => {
+    console.log(`Listening on PORT: ${PORT}`);
+    
+});}
+9. npm run dev to log.
+10. add basic http server by writing 
+{
+app.get('/', (request, response)=> {
+    console.log(request);
+    
+    return response.status(234).send("Hiiiii")
+});
+}
+11. open mongo atlas create database or cluster. connect using drivers node.js and copy url to config.js and import to index.
+12. npm i mongoose to install mongoose.import mongoose.  mongoose.connect(URL); //mongoose is a popular ODM for mongoDB and node.js
+13. dont forget to create an user for database and add it to the url.
+14. create a models folder and create a schema for the database.
+15. create a model using mongoose.model('name', schema) and export it. {
+    import mongoose from "mongoose";
+
+const bookSchema = mongoose.Schema(
+    {
+        title: {
+            type: String,
+            required: true,
+        },
+        author: {
+            type: String,
+            required: true,
+        },
+        category: {
+            type: String,
+            required: true,
+        },
+    },
+    {
+        timestamps: true,
+    }
+);
+
+export const Book = mongoose.model('Cat', bookSchema);
+}
+
+16. in index.js import the model and use it. {
+    import { Book } from "../models/bookModel.js";}
+
+17. we need http route to create a book.
+{
+app.post('/books', async(request, response) => {
+    try {
+
+        if(
+            !request.body.title ||
+            !request.body.author ||
+            !request.body.category
+        ) {
+        return response.status(400).send({
+            message: 'Send all required fields: title, author, category',
+        });
+        }
+        const newBook = {
+            title: request.body.title,
+            author: request.body.author,
+            category: request.body.category,
+        };
+
+        const book = await Book.create(newBook);
+
+        return response.status(201).send(book);
+
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message});
+        
+    }
+});
+
+}
+18. add body parser to index.js to parse json data.
+{
+    app.use(express.json());
+}
+
+19. open postman and check post request to /books with json data. 
+
+20. add get request to /books to get all books.
+app.get('/books', async(request, response) => {
+    try {
+        const books = await Book.find({});
+
+        return response.status(200).json({
+            count: books.length,
+            data: books
+        });
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message});
+        
+    }
+})
+
+21. add get request to /books/:id to get a book by id.
+// Route for Get one book by ID from database
+app.get('/books/:id', async(request, response) => {
+    try {
+
+        const { id } = request.params;
+
+        const book = await Book.findById(id);
+
+        return response.status(200).json(book);
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message});
+        
+    }
+})
+
+22. add put request to /books/:id to update a book by id.
+//Route for update a Book
+app.put('/books/:id', async(request, response) => {
+
+    try {
+
+        if(
+            !request.body.title ||
+            !request.body.author ||
+            !request.body.category
+        ) {
+        return response.status(400).send({
+            message: 'Send all required fields: title, author, category',
+        });
+        
+    } 
+
+    const { id } = request.params;
+
+    const result = await Book.findByIdAndUpdate(id, request.body);
+
+    if(!result) {
+        return response.status(404).json({message: 'Book not found'});
+    }
+
+    return response.status(200).send({message: 'Book updated successfully'});
+
+}   catch (error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message});
+        
+    }
+});
+
+23. add delete request to /books/:id to delete a book by id.
+//Route for delete a Book
+app.delete('/books/:id', async(request, response) => {
+    try {
+
+        const { id } = request.params;
+
+        const result = await Book.findByIdAndDelete(id);
+
+        if(!result) {
+            return response.status(404).json({message: 'Book not found'});
+        }
+
+        return response.status(200).send({message: 'Book Deleted successfully'});    
+    }
+        catch (error) {
+        
+        console.log(error.message);
+        response.status(500).send({message: error.message});
+        
+    }
+});
+
+24. make a folder routes and create a file bookRoutes.js and move all routes to it. //this is to make code clean and modular. to avoid making routes for each model.
+
+25. copy all routes to bookRoutes file and change the route from app.<route> to router.<route> and export the router. 
+    import express from "express";
+
+26. npm i cors to install cors and import it to index.js and use it. {
+    import cors from "cors";
+    app.use(cors());
+}
+
+*****server is ready. now we need to create a client to interact with the server.*****
+
+Frontend: 
+
+1. cd to main folder and run npm create vite@latest // to create a vite app.
+
+2. cd to the folder and run npm install // to install dependencies.
+
+3. import tailwindcss to the project by running npm commands in tailwind site.
+
+4. SPA and React router DOM 
+type npm i react-router-dom to install react router dom.
+
+5. import BrowserRouter to main.jsx and wrap the app with it. {
+    import { BrowserRouter } from "react-router-dom";
+    ReactDOM.createRoot(document.getElementById('root')).render(
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+    )
+}
+
+6. import routes and route in app.jsx and create a route for each page. {
+    import { Routes, Route } from "react-router-dom";
+     <Routes>
+      <Route path='/' element={<Home/>}/>
+      <Route path='/books/create' element={<CreateBook/>}/>
+      <Route path='/books/details/::id' element={<ShowBook/>}/>
+      <Route path='/books/edit/:id' element={<EditBook/>}/>
+      <Route path='/books/delete/:id' element={<DeleteBook/>}/>
+    </Routes>
+}
+
+7. create a folder pages and create a file for each page.
+
+8. instal npm packages npm i axios react-icons.
+
+9. in backend run the server and comment out cors with specific IP address. and uncomment the general cors.
+
+10. open a new terminal for frontend and run frontend also.
+
+11. create components folder and create a file Spinner for loading spinner. type rafce as a shortcut
