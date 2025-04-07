@@ -20,7 +20,7 @@ const BookSingleCard = ({ book }) => {
                 {book.category}
             </h2>
             <h4 className='my-2 text-gray-500'>{book._id}</h4>
-            <div className='w-full h-[200px] flex justify-center items-center mb-4'>
+            <div className='w-full flex justify-center items-center mb-4'>
                 <img
                     src={book.imageURL || 'https://edit.org/images/cat/book-covers-big-2019101610.jpg'}
                     alt={book.title}
