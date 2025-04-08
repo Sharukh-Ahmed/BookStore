@@ -7,10 +7,19 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
 import { useState } from 'react';
 import BookModal from './BookModal';
+import { enqueueSnackbar } from 'notistack';
 
 const BookSingleCard = ({ book }) => {
 
     const [showModal, setShowModal] = useState(false);
+
+    const handlePdfClick = () => {
+        if (book.pdfURL) {
+            window.open(book.pdfURL, '_blank');
+        } else {
+            enqueueSnackbar('No PDF available for this book', { variant: 'error' });
+        }
+    };
 
     return (
         <div
@@ -20,11 +29,13 @@ const BookSingleCard = ({ book }) => {
                 {book.category}
             </h2>
             <h4 className='my-2 text-gray-500'>{book._id}</h4>
-            <div className='w-full flex justify-center items-center mb-4'>
+            <div className='w-full h-[300px] flex justify-center items-center mb-4'>
                 <img
                     src={book.imageURL || 'https://edit.org/images/cat/book-covers-big-2019101610.jpg'}
                     alt={book.title}
-                    className='w-[150px] h-auto object-cover rounded-lg shadow-md'
+                    className='w-[200px] h-[300px] object-cover rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105 hover:shadow-xl'
+                    onClick={handlePdfClick}
+                    title={book.pdfURL ? 'Click to open PDF' : 'No PDF available'}
                 />
             </div>
             <div className='flex justify-start items-center gap-x-2'>

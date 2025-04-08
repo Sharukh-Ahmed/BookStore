@@ -10,6 +10,7 @@ const CreateBook = () => {
   const [author, setAuthor] = useState('');
   const [category, setCategory] = useState('');
   const [imageURL, setImageURL] = useState('');
+  const [pdfURL, setPdfURL] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -19,6 +20,7 @@ const CreateBook = () => {
       author,
       category,
       imageURL,
+      pdfURL,
     };
     setLoading(true);
     axios
@@ -78,6 +80,16 @@ const CreateBook = () => {
             onChange={(e) => setImageURL(e.target.value)}
             className='border-2 border-gray-500 px-4 py-2 w-full'
             placeholder='Enter book cover image URL'
+          />
+        </div>
+        <div className='my-4'>
+          <label className='text-xl mr-4 text-gray-500'>PDF URL</label>
+          <input
+            type='text'
+            value={pdfURL}
+            onChange={(e) => setPdfURL(e.target.value)}
+            className='border-2 border-gray-500 px-4 py-2 w-full'
+            placeholder='Enter PDF URL or Google Drive shared link'
           />
         </div>
         <button className='p-2 bg-sky-300 m-8' onClick={handleSaveBook}>Save</button>
