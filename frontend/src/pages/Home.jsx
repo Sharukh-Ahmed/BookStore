@@ -16,7 +16,7 @@ const Home = () => {
   useEffect(() => {
     setLoading(true);
     axios
-      .get('http://localhost:5555/books')
+      .get('https://bookstore-backend-itmj.onrender.com/books')
       .then((response) => {
         setBooks(response.data.data);//response.data is the object of our response result in that we have data
         setLoading(false);
