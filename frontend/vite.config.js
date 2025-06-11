@@ -12,4 +12,4 @@ export default defineConfig({
     historyApiFallback: true, // handles unknown routes
   }
   }
-})
+)
