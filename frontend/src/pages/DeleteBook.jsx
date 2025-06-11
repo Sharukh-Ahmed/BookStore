@@ -14,7 +14,7 @@ const DeleteBook = () => {
   const handleDeleteBook = ()=> {
     setLoading(true);
     axios
-    .delete(`http://localhost:5555/books/${id}`)
+    .delete(`https://bookstore-backend-itmj.onrender.com/books/${id}`)
     .then((response)=> {
       setLoading(false);
       enqueueSnackbar('Book deleted Successfully', {variant: 'success'})
