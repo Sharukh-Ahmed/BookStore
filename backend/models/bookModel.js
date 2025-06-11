@@ -20,7 +20,7 @@ const bookSchema = mongoose.Schema(
         },
         pdfURL: {
             type: String,
-            required: false
+            required: false,
         },
     },
     {
